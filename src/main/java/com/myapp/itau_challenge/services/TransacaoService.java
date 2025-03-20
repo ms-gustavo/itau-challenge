@@ -10,17 +10,21 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.myapp.itau_challenge.dto.EstatisticaDTO;
+import com.myapp.itau_challenge.exceptions.TransacaoInvalidaException;
 import com.myapp.itau_challenge.model.Transacao;
 
 @Service
 public class TransacaoService {
 	private final List<Transacao> transacoes = new ArrayList<>();
 	
-	public boolean adicionarTransaction(Transacao transacao) {
-		if(transacao.getValor().compareTo(BigDecimal.ZERO) < 0 || transacao.getDataHora().isAfter(OffsetDateTime.now())) return false;
-		
-		transacoes.add(transacao);
-		return true;
+	public void adicionarTransaction(Transacao transacao) {
+		if (transacao.getValor().compareTo(BigDecimal.ZERO) < 0) {
+            throw new TransacaoInvalidaException("O valor da transação não pode ser negativo.");
+        }
+        if (transacao.getDataHora().isAfter(OffsetDateTime.now())) {
+            throw new TransacaoInvalidaException("A data da transação não pode estar no futuro.");
+        }
+        transacoes.add(transacao);
 	}
 	
 	public void limparTransacoes() {

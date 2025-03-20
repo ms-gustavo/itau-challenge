@@ -27,9 +27,9 @@ public class TransacaoController {
 	@PostMapping("/transacao")
 	public ResponseEntity<Void> criarTransacao(@Valid @RequestBody TransacaoDTO transacaoDTO){
 		Transacao transacao = new Transacao(transacaoDTO.valor(), transacaoDTO.dataHora());
-		Boolean sucesso = transacaoService.adicionarTransaction(transacao);
+		transacaoService.adicionarTransaction(transacao);
 		
-		return sucesso ? ResponseEntity.status(HttpStatus.CREATED).build() : ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 	
 	@DeleteMapping("/transacao")
