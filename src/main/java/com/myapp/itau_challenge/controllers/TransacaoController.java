@@ -1,8 +1,11 @@
 package com.myapp.itau_challenge.controllers;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,5 +37,11 @@ public class TransacaoController {
 	public ResponseEntity<Void> deletarTransacoes(){
 		transacaoService.limparTransacoes();
 		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	
+	@GetMapping("/estatistica")
+	public ResponseEntity<List<Transacao>> obterEstatisticas(){
+		List<Transacao> transacoes = transacaoService.obterUltimos60Segundos();
+		return ResponseEntity.status(HttpStatus.OK).body(transacoes);
 	}
 }
