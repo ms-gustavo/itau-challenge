@@ -17,39 +17,40 @@ import com.myapp.itau_challenge.model.Transacao;
 @Service
 public class TransacaoService implements TransacaoInterface {
 	private final List<Transacao> transacoes = new ArrayList<>();
-	
+
 	public void adicionarTransacao(Transacao transacao) {
 		if (transacao.getValor().compareTo(BigDecimal.ZERO) < 0) {
-            throw new TransacaoInvalidaException("O valor da transação não pode ser negativo.");
-        }
-        if (transacao.getDataHora().isAfter(OffsetDateTime.now())) {
-            throw new TransacaoInvalidaException("A data da transação não pode estar no futuro.");
-        }
-        transacoes.add(transacao);
+			throw new TransacaoInvalidaException("O valor da transação não pode ser negativo.");
+		}
+		if (transacao.getDataHora().isAfter(OffsetDateTime.now())) {
+			throw new TransacaoInvalidaException("A data da transação não pode estar no futuro.");
+		}
+		transacoes.add(transacao);
 	}
-	
+
 	public void limparTransacoes() {
 		transacoes.clear();
 	}
-	
-	public List<Transacao> obterUltimos60Segundos(){
+
+	public List<Transacao> obterUltimos60Segundos() {
 		OffsetDateTime limite = OffsetDateTime.now().minusSeconds(60);
-		return transacoes.stream()
-				.filter(t -> t.getDataHora().isAfter(limite))
-				.collect(Collectors.toList());
+		return transacoes.stream().filter(t -> t.getDataHora().isAfter(limite)).collect(Collectors.toList());
 	}
-	
+
 	public EstatisticaDTO calcularEstatisticas() {
 		List<Transacao> ultimasTransacoes = obterUltimos60Segundos();
-		
-		if(ultimasTransacoes.isEmpty()) return new EstatisticaDTO(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);;
-		
-		
+
+		if (ultimasTransacoes.isEmpty())
+			return new EstatisticaDTO(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+		;
+
 		BigDecimal sum = ultimasTransacoes.stream().map(Transacao::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
-		BigDecimal min = ultimasTransacoes.stream().map(Transacao::getValor).min(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
-		BigDecimal max = ultimasTransacoes.stream().map(Transacao::getValor).max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
+		BigDecimal min = ultimasTransacoes.stream().map(Transacao::getValor).min(BigDecimal::compareTo)
+				.orElse(BigDecimal.ZERO);
+		BigDecimal max = ultimasTransacoes.stream().map(Transacao::getValor).max(BigDecimal::compareTo)
+				.orElse(BigDecimal.ZERO);
 		BigDecimal avg = sum.divide(BigDecimal.valueOf(ultimasTransacoes.size()), 2, RoundingMode.HALF_UP);
-		
+
 		return new EstatisticaDTO(ultimasTransacoes.size(), sum, avg, max, min);
 	}
 }

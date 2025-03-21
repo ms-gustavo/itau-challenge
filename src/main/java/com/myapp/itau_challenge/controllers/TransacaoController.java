@@ -23,23 +23,23 @@ import lombok.RequiredArgsConstructor;
 public class TransacaoController {
 
 	private final TransacaoService transacaoService;
-	
+
 	@PostMapping("/transacao")
-	public ResponseEntity<Void> criarTransacao(@Valid @RequestBody TransacaoDTO transacaoDTO){
+	public ResponseEntity<Void> criarTransacao(@Valid @RequestBody TransacaoDTO transacaoDTO) {
 		Transacao transacao = new Transacao(transacaoDTO.valor(), transacaoDTO.dataHora());
 		transacaoService.adicionarTransacao(transacao);
-		
+
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
-	
+
 	@DeleteMapping("/transacao")
-	public ResponseEntity<Void> deletarTransacoes(){
+	public ResponseEntity<Void> deletarTransacoes() {
 		transacaoService.limparTransacoes();
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
-	
+
 	@GetMapping("/estatistica")
-	public ResponseEntity<EstatisticaDTO> obterEstatisticas(){
+	public ResponseEntity<EstatisticaDTO> obterEstatisticas() {
 		EstatisticaDTO transacoes = transacaoService.calcularEstatisticas();
 		return ResponseEntity.status(HttpStatus.OK).body(transacoes);
 	}
