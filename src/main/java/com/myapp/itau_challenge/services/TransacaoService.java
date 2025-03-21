@@ -39,10 +39,8 @@ public class TransacaoService implements TransacaoInterface {
 
 	public EstatisticaDTO calcularEstatisticas() {
 		List<Transacao> ultimasTransacoes = obterUltimos60Segundos();
-
 		if (ultimasTransacoes.isEmpty())
 			return new EstatisticaDTO(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
-		;
 
 		BigDecimal sum = ultimasTransacoes.stream().map(Transacao::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
 		BigDecimal min = ultimasTransacoes.stream().map(Transacao::getValor).min(BigDecimal::compareTo)
@@ -51,6 +49,6 @@ public class TransacaoService implements TransacaoInterface {
 				.orElse(BigDecimal.ZERO);
 		BigDecimal avg = sum.divide(BigDecimal.valueOf(ultimasTransacoes.size()), 2, RoundingMode.HALF_UP);
 
-		return new EstatisticaDTO(ultimasTransacoes.size(), sum, avg, max, min);
+		return new EstatisticaDTO(ultimasTransacoes.size(), sum, avg, min, max);
 	}
 }
