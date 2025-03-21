@@ -11,13 +11,14 @@ import org.springframework.stereotype.Service;
 
 import com.myapp.itau_challenge.dto.EstatisticaDTO;
 import com.myapp.itau_challenge.exceptions.TransacaoInvalidaException;
+import com.myapp.itau_challenge.interfaces.TransacaoInterface;
 import com.myapp.itau_challenge.model.Transacao;
 
 @Service
-public class TransacaoService {
+public class TransacaoService implements TransacaoInterface {
 	private final List<Transacao> transacoes = new ArrayList<>();
 	
-	public void adicionarTransaction(Transacao transacao) {
+	public void adicionarTransacao(Transacao transacao) {
 		if (transacao.getValor().compareTo(BigDecimal.ZERO) < 0) {
             throw new TransacaoInvalidaException("O valor da transação não pode ser negativo.");
         }

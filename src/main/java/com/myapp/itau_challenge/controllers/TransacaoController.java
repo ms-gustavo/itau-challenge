@@ -27,7 +27,7 @@ public class TransacaoController {
 	@PostMapping("/transacao")
 	public ResponseEntity<Void> criarTransacao(@Valid @RequestBody TransacaoDTO transacaoDTO){
 		Transacao transacao = new Transacao(transacaoDTO.valor(), transacaoDTO.dataHora());
-		transacaoService.adicionarTransaction(transacao);
+		transacaoService.adicionarTransacao(transacao);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
